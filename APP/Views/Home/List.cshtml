@@ -1,0 +1,21 @@
+﻿@{
+    ViewData["Title"] = "Home";
+}
+@model HeaderViewModel
+
+<div class="row">
+    <table>
+      <tr><td>Creater:</td><td>@Model.header.Creater</td></tr>  
+    </table>
+    
+    <table class="table table-active">
+        @foreach (var item in Model.Attachments)
+        {
+        <tr>
+            <td> 
+            <partial name="_Attachment" model="item" />
+            </td>
+        </tr>
+        }
+    </table>
+</div>
