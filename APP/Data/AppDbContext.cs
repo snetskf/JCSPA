@@ -17,5 +17,11 @@ namespace APP.Data
         public DbSet<SPAHeader> SPAHeader { get; set; }
 
         public DbSet<Attachments> SPAAttachments { get; set; }
+
+        public DbSet<SPARouting> SPARouting { get; set; }
+
+        public DbSet<SPARequestRouting> SPARequestRouting { get; set; }
+
+
     }
 }

@@ -10,14 +10,14 @@ namespace APP.ViewModel
     {
         public HeaderViewModel()
         {
-            header = new SPAHeader(DateTime.Now.AddDays(-3));
-           
-          //  header.Creater = "Bhv";
-          //  header.Creater = "Bhv";
-            Attachments =  
-            new List<Attachments> { new Attachments { Filename = "test.txt", FileSize = "10mb", Creater = "B" },
-             new Attachments { Filename = "test2.txt", FileSize = "120mb", Creater = "2B" }
-            } ;
+            header = new SPAHeader(DateTime.Now.AddDays(-3)); 
+
+            //  header.Creater = "Bhv";
+            //  header.Creater = "Bhv";
+            //Attachments =
+            //new List<Attachments> { new Attachments { Filename = "test.txt", FileSize = "10mb", Creater = "B" },
+            // new Attachments { Filename = "test2.txt", FileSize = "120mb", Creater = "2B" }
+            //};
         }
 
         public SPAHeader header { get; set; }
@@ -27,6 +27,10 @@ namespace APP.ViewModel
         public string FileUploadMsg { get; set; }
         
         public string CurrentGuid { get; set; }
+
+        public IEnumerable<SPARequestRouting> routing { get; set; }
+
+        public string pagename { get; set; }
     }
 
 }

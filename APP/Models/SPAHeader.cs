@@ -13,6 +13,7 @@ namespace APP.Models
         public SPAHeader(DateTime dateCreated)
         { 
             DateCreated = DateTime.SpecifyKind(dateCreated, DateTimeKind.Local);  
+ 
         }
 
         [Key]
@@ -30,7 +31,8 @@ namespace APP.Models
         public string CFTTeam { get; set; }
 
         [Required]
-        public string DateRequired { get; set; }
+     [DisplayFormat(ApplyFormatInEditMode = true, DataFormatString = "{0:yyyy-MM-dd}")]
+        public DateTime DateRequired { get; set; }
 
         [Required]
         public string ModelandDescription { get; set; }

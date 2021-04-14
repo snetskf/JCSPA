@@ -1,0 +1,199 @@
+﻿@{
+    ViewData["Title"] = "Home";
+}
+@model ListViewModel
+
+@using (Html.BeginForm("UpdateList", "Home", FormMethod.Post))
+{
+<div class="row" id="container">
+
+    <table class="table table-striped">
+        <thead>
+            <tr>
+                <th scope="col">Id</th>
+                <th scope="col">DateCreated</th>
+                <th scope="col">DateRequired</th>
+                <th scope="col">CFTTeam</th>
+            </tr>
+        </thead>
+        @foreach (var item in Model.SPAHeaders)
+        {
+            <tr>
+                <td>@item.Id</td>
+                <td>@item.DateCreated</td>
+                <td>@item.DateRequired</td>
+                <td>@item.CFTTeam</td>
+                <td><a href="#" id="apreview" onclick="previewcall(@item.Id)">Preview</a></td>
+            </tr>
+
+            <tr id="tr-@item.Id" class="d-none">
+                <td class="font-weight-bold">Id</td>
+                <td>@item.Id</td>
+                <td class="font-weight-bold">ModelDescription</td>
+                <td>@item.ModelDescription</td>
+                <td class="font-weight-bold">QtyRequired</td>
+                <td>@item.QtyRequired</td>
+                <td class="font-weight-bold">DeviationInstruction</td>
+                <td>@item.DeviationInstruction</td>
+                <td class="font-weight-bold">PackagingRequirements</td>
+                <td>@item.PackagingRequirements</td>
+                <td class="font-weight-bold">SpecialAssemblyInstr</td>
+                <td>@item.SpecialAssemblyInstr</td>
+                <td class="font-weight-bold">TestRequirements</td>
+                <td>@item.TestRequirements</td>
+                <td class="font-weight-bold">Status</td>
+                <td>@item.Status</td>
+
+            </tr>
+        }
+    </table>
+     
+    <table>
+        <tr>
+            <td>PageSize</td>
+            <td> <select id="pagesizedp"><option></option><option>10</option> <option>20</option> <option>30</option></select></td>
+            <td>@Html.ActionLink("Update grid", "List", "Home", new { pagesize = "{0}" }, new { id = "updategridlink" })</td>
+            <td>@Html.HiddenFor(x => x.newpagesize, new { id = "hiddennewpagesize" })</td>
+            <td>@Html.HiddenFor(x => x.startpage, new { id = "hiddenstartpage" })</td>
+            <td><input type="submit" value="Update List" id="btnchangepagesize" name="btnchangepagesizename" /></td>
+        </tr>
+        <tr>
+                
+            <td class="text-primary">Page Number: </td>
+            @{ int totalpages = Model.totalpages; int kmax = Convert.ToInt32(Model.pagesize + Model.startpage);
+                if (kmax > totalpages) { kmax = totalpages+1; }
+            }
+            @if (Model.startpage > 1)
+            {
+        <td>
+            <input type="submit" value="First Page" id="kpagelink 1" onclick="kpagelink(id)" name="kbtnchangepagesizename" class="btn btn-warning" />
+
+            @*@Html.ActionLink("First Page", "List", "Home", new { pageindex = 1 }, new
+        {
+            @class = "btn btn-warning",
+            id = "pagelink",
+            onclick = ("nextpage(hiddennextpagenumber)")
+        })*@
+        </td>
+                <td>
+                    <input type="submit" value="<" id="kpagelink @Model.startpage" onclick="kpagelink(id)" name="kbtnchangepagesizename" class="btn btn-warning" />
+
+                    @*@Html.ActionLink("<", "List", "Home", new { pageindex = Convert.ToInt32(Model.startpage - 1) }, new
+        {
+            @class = "btn btn-warning",
+            id = "pagelink",
+            onclick = ("nextpage(hiddennextpagenumber)")
+        })*@
+                </td>
+            }
+            @for (int k = Model.startpage; k < kmax; k++)
+            {
+
+        <td>
+            <input type="submit" value=@k.ToString() id="kpagelink @k.ToString()" onclick="kpagelink(id)"  name="kbtnchangepagesizename" class="btn btn-warning" />
+            @*@Html.ActionLink(k.ToString(), "List", "Home", new { pageindex = k }, new
+       {
+           @class = "btn btn-warning",
+           id = "pagelink" + k.ToString(),
+           onclick = "pageClicked(id)"
+       })*@
+        </td>
+
+            }
+            @if (ViewBag.pagelist >= Model.pagesize + Model.startpage)
+            {
+        <td>
+            <input type="submit" value=">" id="kpagelink @Model.startpage+@Model.pagesize" onclick="kpagelink(id)" name="kbtnchangepagesizename" class="btn btn-warning" />
+
+            @*@Html.ActionLink(">", "List", "Home", new { pageindex = Convert.ToInt32(Model.pagesize + Model.startpage) }, new
+        {
+            @class = "btn btn-warning",
+            id = "pagelink",
+            onclick = ("nextpage(hiddennextpagenumber)")
+        })*@
+        </td>
+        <td>
+            <input type="submit" value="Last Page" id="kpagelink @totalpages" onclick="kpagelink(id)" name="kbtnchangepagesizename" class="btn btn-warning" />
+
+            @*@Html.ActionLink("Last Page", "List", "Home", new { pageindex = totalpages }, new
+        {
+            @class = "btn btn-warning",
+            id = "pagelink",
+            onclick = ("nextpage(hiddennextpagenumber)")
+        })*@
+        </td>
+            }
+
+        </tr>
+    </table>
+  <input type="hidden" id="hiddenpagenumber" value="@ViewBag.pagenumber" />
+</div>
+}
+    <script src="~/lib/jquery/jquery.js"></script>
+
+
+    <script type="text/javascript">
+        $(document).ready(function () {
+            var number = $('#hiddenpagenumber').val();
+            if ($('#hiddenpagenumber').val() == 1) {
+
+                $('#'+'pagelink1').addClass("bg-primary");
+            }
+            else { 
+                $('#' + 'pagelink' + number).addClass("bg-primary");                
+            } 
+        });
+         $('#pagesizedp').on('change', function () {
+             $('#hiddennewpagesize').val($('#pagesizedp :selected').text());
+         });
+
+        function kpagelink(id) {
+              $('#hiddenstartpage').val(id.replace("kpagelink ",""));
+        }
+
+        //$('#pagesizedp').on('change', function () {
+        //    var routevalue = $('#pagesizedp :selected').text();
+        //    $.ajax({
+        //        url: "/Home/UpdateList",
+        //        data: { pagesize: routevalue },
+        //        type: "GET",
+        //        contentType: "application/json; charset=utf-8",
+        //        dataType: "json",
+        //        cache: false,
+        //        async: true,
+        //        error: function (jqXHR, error, errorThrown) {
+        //            //display error
+        //        },
+        //    success: function (response) {
+        //        alert(response);
+        //            $('#container').html(response);
+        //        }
+        //    })            
+        //});
+
+        $('#updategridlink').on('click', function () {
+            var routevalue = $('#pagesizedp :selected').text();
+            $('#hiddennewpagesizeid').val(routevalue);
+            url = decodeURIComponent($(this).attr('href'));
+            url.replace("={0}", "=" + routevalue);
+            $(this).attr('href', url.replace("={0}", "=" + routevalue));
+          
+         //   var url = $(this).attr('href');
+            // url.format(routevalue);
+           // alert(url.replace("={0}","="+routevalue));
+            
+        });
+        function previewcall(id) {
+            alert($('#tr-' + id).text());
+            //   $('#tr-' + id).removeClass("d-none").addClass("bg-light");
+        }
+
+        function hidecall(id) { $('#tr-' + id).addClass("d-none"); }
+
+        function pageClicked(id) { $('#' + id).addClass("bg-secondary"); }
+        function nextpage(id) { $('#pagelink').addClass("bg-primary"); }
+
+        //$('#apreview').on('mouseover', function () {
+        //    $('tr').removeClass("d-none");
+        //    });
+    </script>

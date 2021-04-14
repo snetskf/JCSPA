@@ -115,6 +115,62 @@ namespace APP.Migrations
                     b.ToTable("SPAHeader");
                 });
 
+            modelBuilder.Entity("APP.Models.SPARequestRouting", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int")
+                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
+
+                    b.Property<string>("Email")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<int?>("SpaheaderidId")
+                        .HasColumnType("int");
+
+                    b.Property<string>("Status")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<DateTime>("TimeStamp")
+                        .HasColumnType("datetime2");
+
+                    b.Property<string>("Type")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("SpaheaderidId");
+
+                    b.ToTable("SPARequestRouting");
+                });
+
+            modelBuilder.Entity("APP.Models.SPARouting", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int")
+                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
+
+                    b.Property<string>("Email")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("IsPrimary")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("RequestType")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<int>("SortId")
+                        .HasColumnType("int");
+
+                    b.Property<string>("Type")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("SPARouting");
+                });
+
             modelBuilder.Entity("APP.Models.Attachments", b =>
                 {
                     b.HasOne("APP.Models.SPAHeader", "spaheader")
@@ -122,6 +178,15 @@ namespace APP.Migrations
                         .HasForeignKey("spaheaderId");
 
                     b.Navigation("spaheader");
+                });
+
+            modelBuilder.Entity("APP.Models.SPARequestRouting", b =>
+                {
+                    b.HasOne("APP.Models.SPAHeader", "Spaheaderid")
+                        .WithMany()
+                        .HasForeignKey("SpaheaderidId");
+
+                    b.Navigation("Spaheaderid");
                 });
 #pragma warning restore 612, 618
         }

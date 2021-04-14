@@ -1,21 +1,232 @@
 ﻿@{
     ViewData["Title"] = "Home";
 }
-@model HeaderViewModel
+@model ListViewModel
 
-<div class="row">
-    <table>
-      <tr><td>Creater:</td><td>@Model.header.Creater</td></tr>  
-    </table>
-    
-    <table class="table table-active">
-        @foreach (var item in Model.Attachments)
-        {
-        <tr>
-            <td> 
-            <partial name="_Attachment" model="item" />
+@using (Html.BeginForm("UpdateList", "Home", FormMethod.Post))
+{
+<div class="row" id="container">
+
+    <table class="table">
+        <tr class="d-flex">
+            <td class="text-info offset-1 col-1">Page Size</td>
+            <td class="col-1"> <select id="pagesizedp"><option></option><option>10</option> <option>20</option> <option>30</option></select></td>
+
+            <td class="col-3">
+                <button type="submit" value="Update List" id="btnchangepagesize" name="btnchangepagesizename" class="btn btn-primary">
+                    <i class="fa fa-sync-alt"> </i> Update
+                </button>
             </td>
+            <td>@Html.TextBoxFor(x => x.searchvalue, new { @class = "form-control" }) </td>
+            <td> <button type="submit" value="Search" class="btn btn-primary" id="searchboxbuttonid"><i class="fas fa-redo"> </i> </button> </td>
+            <td>@Html.HiddenFor(x => x.newpagesize, new { id = "hiddennewpagesize" })</td>
+            <td>@Html.HiddenFor(x => x.startpage, new { id = "hiddenstartpage" })</td>
+            <td><button type="submit" value="Reset Grid" class="btn btn-primary" id="refreshgridid">
+                <i class="fas fa-redo-alt"> </i>Reset Grid </button></td>
         </tr>
+    </table>
+
+
+    @Html.HiddenFor(x => x.sortfield, new { id = "hiddensortfield" })
+    @Html.HiddenFor(x => x.sortseq, new { id = "hiddensortseq" })
+  
+    <table class="table table-striped mt-2">
+        <thead>
+            <tr>
+                <th scope="col">
+                    <button type="submit" id="btnidlinkID" class="btn btn-link" value="@ViewBag.seq" name="sortlink" onclick="sortlinkclick(id)">
+                        @if (@ViewBag.seq == "DSC")
+                        {
+                            <i class="fas fa-sort-alpha-up-alt" id="iid"></i>}
+                        else
+                        { 
+                            <i class="fas fa-sort-alpha-down" id="iid"></i>}
+                        ID
+                    </button></th>
+                <th scope="col">
+                    <button type="submit" id="btnidlinkDtCreated" class="btn btn-link" value="@ViewBag.seq" name="sortlink" onclick="sortlinkclick(id)">
+                        @if (@ViewBag.seq == "DSC")
+                        {
+                            <i class="fas fa-sort-alpha-up-alt" id="iid"></i>}
+                        else
+                        {
+                            <i class="fas fa-sort-alpha-down" id="iid"></i>} Date Created
+                    </button>
+                </th>
+                <th scope="col">
+                    <button type="submit" id="btnidlinkDtRequired" class="btn btn-link" value="@ViewBag.seq" name="sortlink" onclick="sortlinkclick(id)">
+                        @if (@ViewBag.seq == "DSC")
+                        {
+                            <i class="fas fa-sort-alpha-up-alt" id="iid"></i>}
+                        else
+                        {
+                            <i class="fas fa-sort-alpha-down" id="iid"></i>} Date Required
+                    </button>
+                </th>
+                <th scope="col">
+                    <button type="submit" id="btnidlinkCFTTeam" class="btn btn-link" value="@ViewBag.seq" name="sortlink" onclick="sortlinkclick(id)">
+                        @if (@ViewBag.seq == "DSC")
+                        {
+                            <i class="fas fa-sort-alpha-up-alt" id="iid"></i>}
+                        else
+                        {
+                            <i class="fas fa-sort-alpha-down" id="iid"></i>} CFT Team
+                    </button>
+                </th>
+                <th scope="col">
+                    <button type="submit" id="btnidlinkQtyRequired" class="btn btn-link" value="@ViewBag.seq" name="sortlink" onclick="sortlinkclick(id)">
+                        @if (@ViewBag.seq == "DSC")
+                        {
+                            <i class="fas fa-sort-alpha-up-alt" id="iid"></i>}
+                        else
+                        {
+                            <i class="fas fa-sort-alpha-down" id="iid"></i>} Qty Required
+                    </button>
+                </th>
+                <th scope="col">
+                    <button type="submit" id="btnidlinkCreater" class="btn btn-link" value="@ViewBag.seq" name="sortlink" onclick="sortlinkclick(id)">
+                        @if (@ViewBag.seq == "DSC")
+                        {
+                            <i class="fas fa-sort-alpha-up-alt" id="iid"></i>}
+                        else
+                        {
+                            <i class="fas fa-sort-alpha-down" id="iid"></i>} Creater
+                    </button>
+                </th>
+            </tr>
+        </thead>
+        @foreach (var item in Model.SPAHeaders)
+        {
+    <tr>
+        <td>@item.Id</td>
+        <td>@item.DateCreated</td>
+        <td>@item.DateRequired</td>
+        <td>@item.CFTTeam</td>
+        <td>@item.QtyRequired</td>
+        <td>@item.Creater</td>
+        <td><a href="#" id="apreview" onclick="previewcall(@item.Id)">Preview</a></td>
+        <td>@Html.ActionLink("Edit","Edit",new {id=item.Id })</td>
+    </tr>
+
+            <tr id="tr-@item.Id" class="d-none">
+                <td class="font-weight-bold">Id</td>
+                <td>@item.Id</td>
+                <td class="font-weight-bold">ModelDescription</td>
+                <td>@item.ModelDescription</td>
+                <td class="font-weight-bold">QtyRequired</td>
+                <td>@item.QtyRequired</td>
+                <td class="font-weight-bold">DeviationInstruction</td>
+                <td>@item.DeviationInstruction</td>
+                <td class="font-weight-bold">PackagingRequirements</td>
+                <td>@item.PackagingRequirements</td>
+                <td class="font-weight-bold">SpecialAssemblyInstr</td>
+                <td>@item.SpecialAssemblyInstr</td>
+                <td class="font-weight-bold">TestRequirements</td>
+                <td>@item.TestRequirements</td>
+                <td class="font-weight-bold">Status</td>
+                <td>@item.Status</td>
+
+            </tr>
         }
     </table>
+
+    <table>
+
+        <tr>
+
+            <td class="text-primary">Page Number: </td>
+            @{ int totalpages = Model.totalpages; int kmax = Convert.ToInt32(Model.pagesize + Model.startpage);
+                if (kmax > totalpages) { kmax = totalpages + 1; }
+
+                int nextpagenumber = Convert.ToInt32(Model.startpage + Model.pagesize);
+                int previouspagenumber = 1;
+                if (Model.startpage > 1) { previouspagenumber = Convert.ToInt32(Model.startpage - 1); }
+            }
+            @if (Model.startpage > 1)
+            {
+                <td>
+                    <input type="submit" value="First Page" id="kpagelink-1" onclick="kpagelink(id)" name="kbtnchangepagesizename" class="btn btn-warning" />
+
+                </td>
+                <td>
+                    <input type="submit" value="<" id="kpagelink-@previouspagenumber" onclick="kpagelink(id)" name="kbtnchangepagesizename" class="btn btn-warning" />
+                </td>
+            }
+            @for (int k = Model.startpage; k < kmax; k++)
+            {
+
+                <td>
+                    <input type="submit" value=@k.ToString() id="kpagelink-@k.ToString()" onclick="kpagelink(id)" name="kbtnchangepagesizename" class="btn btn-warning" />
+
+                </td>
+
+            }
+            @if (ViewBag.pagelist >= Model.pagesize + Model.startpage)
+            {
+                <td>
+                    <input type="submit" value=">" id="kpagelink-@nextpagenumber" onclick="kpagelink(id)" name="kbtnchangepagesizename" class="btn btn-warning" />
+
+                </td>
+                <td>
+                    <input type="submit" value="Last Page" id="kpagelink-@totalpages" onclick="kpagelink(id)" name="kbtnchangepagesizename" class="btn btn-warning" />
+
+                </td>
+            }
+
+        </tr>
+    </table>
+    <input type="hidden" id="hiddenpagenumber" value="@Model.startpage" />
 </div>
+}
+    <script src="~/lib/jquery/jquery.js"></script>
+
+
+    <script type="text/javascript">
+        $(document).ready(function () {
+         
+            var number = $('#hiddenpagenumber').val();
+            if ($('#hiddenpagenumber').val() == 1) {
+
+                $('#' + 'kpagelink-1').addClass("bg-primary");
+            }
+            else {
+                $('#' + 'kpagelink-' + number).addClass("bg-primary");
+            }
+        });
+
+         $('#pagesizedp').on('change', function () {
+             $('#hiddennewpagesize').val($('#pagesizedp :selected').text());
+         });
+
+        function kpagelink(id) { 
+            $('#hiddenstartpage').val(id.replace("kpagelink-", ""));  
+        }
+         
+        $('#refreshgridid').on('click', function () {
+            $('#searchvalue').val(''); $('#hiddenstartpage').val('1'); $('#hiddennewpagesize').val('10');
+        });
+
+        function sortlinkclick(id) {
+            
+
+            $('#hiddensortfield').val($('#' + id + '').text());
+            $('#hiddensortseq').val($('#' + id + '').val()); 
+           // $('#iid').removeClass('fa-sort-alpha-down').addClass('fa-sort-alpha-up-alt');
+            //$("#btnidlink").find($(".fas")).removeClass('fa-sort-alpha-down').addClass('fas fa-sort-alpha-up');
+
+        }
+
+        function previewcall(id) {
+            alert($('#tr-' + id).text());
+            //   $('#tr-' + id).removeClass("d-none").addClass("bg-light");
+        }
+
+        function hidecall(id) { $('#tr-' + id).addClass("d-none"); }
+
+        function pageClicked(id) { $('#' + id).addClass("bg-secondary"); }
+        function nextpage(id) { $('#pagelink').addClass("bg-primary"); }
+
+        //$('#apreview').on('mouseover', function () {
+        //    $('tr').removeClass("d-none");
+        //    });
+    </script>

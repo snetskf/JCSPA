@@ -1,0 +1,25 @@
+﻿@model APP.ViewModel.HeaderViewModel
+
+@{
+    ViewData["Title"] = "Edit";
+}
+
+<h4 class="bg-primary text-white">Request id- @Model.header.Id</h4>
+
+
+<div class="mt-2">
+    <a asp-action="List" class="btn btn-primary">Back to List</a>
+</div>
+
+<form asp-action="IndexEdit" enctype="multipart/form-data">
+
+    <partial name="_HeaderVM" model="@Model" />
+
+
+    <div>
+        <input type="submit" value="Approved" class="offset-2 btn btn-success" name="btnAction" />
+        <input type="submit" value="Rejected" class="offset-5 btn btn-danger" name="btnAction" />
+
+    </div>
+
+</form>
